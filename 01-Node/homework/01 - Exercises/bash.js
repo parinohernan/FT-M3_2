@@ -10,7 +10,8 @@ const print = (output) =>{
 function bash() {
    process.stdout.write("prompt > ");
    process.stdin.on("data", (data) => {
-         let args = data.toString().trim().split(' '); //saca los espacios delante y detras
+         let args = data.toString().trim().split(' '); //saca los espacios delante
+         // y detras y debuelve un array
          let cmd = args.shift(); //saco la primera palablra
          
          commands[cmd]
