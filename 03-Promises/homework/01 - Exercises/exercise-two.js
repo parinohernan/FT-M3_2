@@ -1,6 +1,8 @@
 "use strict";
 
+const { log } = require("util");
 let exerciseUtils = require("./utils");
+const { forEach } = require("async");
 
 let args = process.argv.slice(2).map(function (st) {
   return st.toUpperCase();
@@ -19,15 +21,22 @@ args.forEach(function (arg) {
 
 function problemA() {
   // callback version
-  exerciseUtils.readFile("poem-two/stanza-01.txt", function (err, stanza) {
-    exerciseUtils.blue(stanza);
-  });
-  exerciseUtils.readFile("poem-two/stanza-02.txt", function (err, stanza) {
-    exerciseUtils.blue(stanza);
-  });
+  // exerciseUtils.readFile("poem-two/stanza-01.txt", function (err, stanza) {
+  //   exerciseUtils.blue(stanza);
+  // });
+  // exerciseUtils.readFile("poem-two/stanza-02.txt", function (err, stanza) {
+  //   exerciseUtils.blue(stanza);
+  // });
 
   // promise version
   // Tu código acá:
+  const p1 = exerciseUtils.promisifiedReadFile("poem-two/stanza-01.txt").then(stanza => exerciseUtils.blue(stanza));
+  const p2 = exerciseUtils.promisifiedReadFile("poem-two/stanza-02.txt").then(stanza => exerciseUtils.blue(stanza));
+
+  Promise.all([p1,p2])
+  .then (() => console.log("done"))
+  
+  .catch (err => exerciseUtils.magenta(new Error(err)))
 }
 
 function problemB() {
@@ -38,15 +47,23 @@ function problemB() {
   filenames[randIdx] = "wrong-file-name-" + (randIdx + 1) + ".txt";
 
   // callback version
-  filenames.forEach((filename) => {
-    exerciseUtils.readFile(filename, function (err, stanza) {
-      exerciseUtils.blue(stanza);
-      if (err) exerciseUtils.magenta(new Error(err));
-    });
-  });
+  // filenames.forEach((filename) => {
+  //   exerciseUtils.readFile(filename, function (err, stanza) {
+  //     exerciseUtils.blue(stanza);
+  //     if (err) exerciseUtils.magenta(new Error(err));
+  //   });
+  // });
 
   // promise version
   // Tu código acá:
+  let promesasArray = filenames.map
+    (filename => exerciseUtils.promisifiedReadFile(filename).then(exerciseUtils.blue)
+    .catch (err => exerciseUtils.magenta(new Error(err))));
+  
+
+  Promise.all(promesasArray) 
+    .then (() => console.log("done"))
+    .catch (err => exerciseUtils.magenta(new Error(err)));
 }
 
 // EJERCICIO EXTRA
